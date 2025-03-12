@@ -31,9 +31,27 @@ function App() {
       setLoading(false);
     }
   };
-  
 
-  return <></>;
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim();
+    setIinputText(value);
+    if (!value) {
+      return setQRCodeUrl("");
+    }
+   
+  };
+
+  return (
+    <div>
+      <h1>QR Code Generator</h1>
+      <input
+        type="text"
+        value={inputText}
+        onChange={handleInputChange}
+        placeholder="Enter text or phone number"
+      />
+    </div>
+  );
 }
 
 export default App;
