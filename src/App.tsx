@@ -40,6 +40,8 @@ function App() {
     }
    
   };
+  if (loading) return <p>Loding...</p>
+  if (error) return <p>Error: {error.message}</p>
 
   return (
     <div>
