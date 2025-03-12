@@ -16,6 +16,10 @@ function App() {
   // const [showUrlButtons, setShowUrlButtons] = useState(false);
   // const [showSMSButtons, setShowSMSButtons] = useState(false);
 
+  const generateQRCodeLink = (phoneNumber: string, useWhatsApp: boolean) => {
+    return useWhatsApp ? `https://wa.me/${phoneNumber}` : `tel:${phoneNumber}`;
+  };
+
   const fetchQRCode = async (data: string) => {
     const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
       data
@@ -36,8 +40,11 @@ function App() {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
-    setInputText(value); // Tippfehler korrigiert
+    setInputText(value);
+    const phoneNumber = value.replace(/^\+?\d{10,}$/, "");
+
     setShowTextButtons(value.length > 0);
+    setShowPhoneButtons(phoneNumber.length > 5 && value.length > 10);
     if (!value) {
       return setQRCodeUrl("");
     }
@@ -55,6 +62,25 @@ function App() {
         onChange={handleInputChange}
         placeholder="Enter text or phone number"
       />
+      <div>
+        {showPhoneButtons && (
+          <>
+            <button
+              onClick={() =>
+                fetchQRCode(
+                  generateQRCodeLink(
+                    inputText.replace(/^\+?\d{10,}$/, ""),
+                    true
+                  )
+                )
+              }
+            >
+              WhatsApp QR
+            </button>
+            <button>Call QR</button>
+          </>
+        )}
+      </div>
       {showTextButtons && (
         <button onClick={() => fetchQRCode(inputText)}>Text QR</button>
       )}
