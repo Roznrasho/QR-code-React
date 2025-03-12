@@ -3,18 +3,12 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [inputText, setInputText] = useState(""); // Tippfehler korrigiert
+  const [inputText, setInputText] = useState("");
   const [qrCodeUrl, setQRCodeUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | Error>(null);
   const [showPhoneButtons, setShowPhoneButtons] = useState(false);
   const [showTextButtons, setShowTextButtons] = useState(false);
-  // const [showEmailButtons, setShowEmailButtons] = useState(false);
-  // const [showSocialButtons, setShowSocialButtons] = useState(false);
-  // const [showLocationButtons, setShowLocationButtons] = useState(false);
-  // const [showWifiButtons, setShowWifiButtons] = useState(false);
-  // const [showUrlButtons, setShowUrlButtons] = useState(false);
-  // const [showSMSButtons, setShowSMSButtons] = useState(false);
 
   const generateQRCodeLink = (phoneNumber: string, useWhatsApp: boolean) => {
     return useWhatsApp ? `https://wa.me/${phoneNumber}` : `tel:${phoneNumber}`;
@@ -29,7 +23,7 @@ function App() {
       if (!response.ok) {
         throw new Error("Failed to generate QR code");
       }
-      const qrCodeUrl = response.url; // URL des QR-Codes speichern
+      const qrCodeUrl = response.url;
       setQRCodeUrl(qrCodeUrl);
     } catch (error: unknown) {
       setError(error as Error);
@@ -41,10 +35,10 @@ function App() {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
     setInputText(value);
-    const phoneNumber = value.replace(/^\+?\d{10,}$/, "");
+    const isPhoneNumber = /^\+?\d{10,}$/.test(value);
 
     setShowTextButtons(value.length > 0);
-    setShowPhoneButtons(phoneNumber.length > 5 && value.length > 10);
+    setShowPhoneButtons(isPhoneNumber);
     if (!value) {
       return setQRCodeUrl("");
     }
@@ -67,17 +61,18 @@ function App() {
           <>
             <button
               onClick={() =>
-                fetchQRCode(
-                  generateQRCodeLink(
-                    inputText.replace(/^\+?\d{10,}$/, ""),
-                    true
-                  )
-                )
+                fetchQRCode(generateQRCodeLink(inputText, true))
               }
             >
               WhatsApp QR
             </button>
-            <button>Call QR</button>
+            <button
+              onClick={() =>
+                fetchQRCode(generateQRCodeLink(inputText, false))
+              }
+            >
+              Call QR
+            </button>
           </>
         )}
       </div>
