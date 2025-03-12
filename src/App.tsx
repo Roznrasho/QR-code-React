@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [inputText, setIinputText] = useState("");
+  const [inputText, setInputText] = useState(""); // Tippfehler korrigiert
   const [qrCodeUrl, setQRCodeUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | Error>(null);
@@ -25,6 +25,8 @@ function App() {
       if (!response.ok) {
         throw new Error("Failed to generate QR code");
       }
+      const qrCodeUrl = response.url; // URL des QR-Codes speichern
+      setQRCodeUrl(qrCodeUrl);
     } catch (error: unknown) {
       setError(error as Error);
     } finally {
@@ -34,14 +36,15 @@ function App() {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
-    setIinputText(value);
+    setInputText(value); // Tippfehler korrigiert
+    setShowTextButtons(value.length > 0);
     if (!value) {
       return setQRCodeUrl("");
     }
-   
   };
-  if (loading) return <p>Loding...</p>
-  if (error) return <p>Error: {error.message}</p>
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <div>
@@ -52,6 +55,10 @@ function App() {
         onChange={handleInputChange}
         placeholder="Enter text or phone number"
       />
+      {showTextButtons && (
+        <button onClick={() => fetchQRCode(inputText)}>Text QR</button>
+      )}
+      {qrCodeUrl && <img src={qrCodeUrl} alt="QR Code" />}
     </div>
   );
 }
