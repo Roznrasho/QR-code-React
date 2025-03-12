@@ -43,6 +43,12 @@ function App() {
       return setQRCodeUrl("");
     }
   };
+  const reset = () => {
+    setInputText("");
+    setQRCodeUrl("");
+    setShowPhoneButtons(false);
+    setShowTextQRButton(false);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -79,7 +85,20 @@ function App() {
       {showTextButtons && (
         <button onClick={() => fetchQRCode(inputText)}>Text QR</button>
       )}
-      {qrCodeUrl && <img src={qrCodeUrl} alt="QR Code" />}
+       {inputText && (
+          <button className="btn-reset" onClick={reset}>
+            Reset
+          </button>
+        )}
+     
+      {qrCodeUrl && (
+        <div>
+          <img src={qrCodeUrl} alt="QR Code"/>
+          <a href={qrCodeUrl} download="qrcode.png">
+            👥 Download QR Code
+          </a>
+        </div>
+      )}
     </div>
   );
 }
