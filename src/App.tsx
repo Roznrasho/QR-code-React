@@ -47,7 +47,7 @@ function App() {
     setInputText("");
     setQRCodeUrl("");
     setShowPhoneButtons(false);
-    setShowTextQRButton(false);
+    setShowTextButtons(false);
   };
 
   if (loading) return <p>Loading...</p>;
